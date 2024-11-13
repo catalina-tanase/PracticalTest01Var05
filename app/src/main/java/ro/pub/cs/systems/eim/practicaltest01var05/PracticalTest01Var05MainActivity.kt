@@ -1,5 +1,6 @@
 package ro.pub.cs.systems.eim.practicaltest01var05
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
@@ -55,6 +56,12 @@ class PracticalTest01Var05MainActivity : AppCompatActivity() {
         buttonBottomLeft.setOnClickListener(buttonClickListener)
         buttonBottomRight.setOnClickListener(buttonClickListener)
 
+        buttonTransfer.setOnClickListener {
+            val intent = Intent(this, PracticalTest01Var05SecondaryActivity::class.java)
+            intent.putExtra("TEMPLATE", editTextField.text.toString())
+            startActivityForResult(intent, 1)
+        }
+
         if (savedInstanceState != null) {
             clickCount = savedInstanceState.getInt("click_count", 0)
             Toast.makeText(this, "Total Clicks: $clickCount", Toast.LENGTH_SHORT).show()
@@ -75,5 +82,16 @@ class PracticalTest01Var05MainActivity : AppCompatActivity() {
         super.onRestoreInstanceState(savedInstanceState)
         clickCount = savedInstanceState.getInt("click_count", 0)
         Toast.makeText(this, "Total Clicks: $clickCount", Toast.LENGTH_SHORT).show()
+    }
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == 1) {
+            if (resultCode == Activity.RESULT_OK) {
+                val result = data?.getStringExtra("RESULT")
+                Toast.makeText(this, "Result: $result", Toast.LENGTH_SHORT).show()
+            } else if (resultCode == Activity.RESULT_CANCELED) {
+                Toast.makeText(this, "Action Cancelled", Toast.LENGTH_SHORT).show()
+            }
+        }
     }
 }
