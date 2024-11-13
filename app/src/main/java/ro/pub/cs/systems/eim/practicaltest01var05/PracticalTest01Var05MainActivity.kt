@@ -6,6 +6,7 @@ import android.view.View
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -20,9 +21,12 @@ class PracticalTest01Var05MainActivity : AppCompatActivity() {
     private lateinit var buttonBottomRight: Button
     private lateinit var buttonTransfer: Button
 
+    private var clickCount: Int = 0
+
     private val buttonClickListener = ButtonClickListener()
     private inner class ButtonClickListener : View.OnClickListener {
         override fun onClick(view: View) {
+            clickCount++
             when (view.id) {
                 R.id.button_top_left -> appendText("Top Left")
                 R.id.button_top_right -> appendText("Top Right")
@@ -51,10 +55,25 @@ class PracticalTest01Var05MainActivity : AppCompatActivity() {
         buttonBottomLeft.setOnClickListener(buttonClickListener)
         buttonBottomRight.setOnClickListener(buttonClickListener)
 
+        if (savedInstanceState != null) {
+            clickCount = savedInstanceState.getInt("click_count", 0)
+            Toast.makeText(this, "Total Clicks: $clickCount", Toast.LENGTH_SHORT).show()
+        }
+
     }
     private fun appendText(text: String) {
         val currentText = editTextField.text.toString()
         val newText = if (currentText.isEmpty()) text else "$currentText, $text"
         editTextField.setText(newText)
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putInt("click_count", clickCount)
+    }
+    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
+        super.onRestoreInstanceState(savedInstanceState)
+        clickCount = savedInstanceState.getInt("click_count", 0)
+        Toast.makeText(this, "Total Clicks: $clickCount", Toast.LENGTH_SHORT).show()
     }
 }
