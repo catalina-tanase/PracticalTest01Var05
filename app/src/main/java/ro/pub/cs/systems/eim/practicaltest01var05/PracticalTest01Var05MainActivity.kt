@@ -14,6 +14,8 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 
 class PracticalTest01Var05MainActivity : AppCompatActivity() {
+
+    companion object { const val ELEMENT_THRESHOLD = 3 }
     private lateinit var editTextField: EditText
     private lateinit var buttonTopLeft: Button
     private lateinit var buttonTopRight: Button
@@ -60,6 +62,12 @@ class PracticalTest01Var05MainActivity : AppCompatActivity() {
             val intent = Intent(this, PracticalTest01Var05SecondaryActivity::class.java)
             intent.putExtra("TEMPLATE", editTextField.text.toString())
             startActivityForResult(intent, 1)
+            val elements = editTextField.text.toString().split(",")
+            if (elements.size > ELEMENT_THRESHOLD) {
+                val intent = Intent(this, PracticalTest01Var05Service::class.java)
+                intent.putExtra("TEMPLATE", editTextField.text.toString())
+                startService(intent)
+            }
         }
 
         if (savedInstanceState != null) {
@@ -93,5 +101,9 @@ class PracticalTest01Var05MainActivity : AppCompatActivity() {
                 Toast.makeText(this, "Action Cancelled", Toast.LENGTH_SHORT).show()
             }
         }
+    }
+    override fun onDestroy() {
+        stopService(Intent(this, PracticalTest01Var05Service::class.java))
+        super.onDestroy()
     }
 }
